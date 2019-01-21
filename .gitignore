@@ -3,6 +3,7 @@
 *~
 \#*\#
 vgcore*
+.vscode/
 
 # Compiled Object files
 *.slo
