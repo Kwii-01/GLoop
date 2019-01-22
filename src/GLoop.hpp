@@ -25,6 +25,7 @@ namespace gloop {
 			void	update();
 
 		private:
+			std::size_t			_maxSys;
 	//		SparseSet<ISystem>	_systems;
 	};
 };
