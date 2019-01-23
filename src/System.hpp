@@ -8,7 +8,7 @@ namespace gloop {
 		public:
 			virtual ~ISystem() = default;
 
-			virtual void	init() = 0;
+			virtual void	start() = 0;
 			virtual void	update() = 0;
 
 			virtual const uint32_t	&getPriority() const noexcept = 0;
