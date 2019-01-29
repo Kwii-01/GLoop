@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.13)
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -g3 -std=c++17")
 set(CXX_STANDARD 17)
 
-project(ECS VERSION 1.0)
+project(Game VERSION 1.0)
 
 add_subdirectory(src)
 add_subdirectory(test)

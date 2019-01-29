@@ -1,8 +1,10 @@
 
 set(CORE_SRCS
-	SparseSet.hpp
-	Register.hpp
-	Family.hpp)
+	GLoop.hpp
+	System.hpp
+	ThreadPool.hpp
+)
 
+add_subdirectory(ECM)
 
 add_library(CORE_SRCS INTERFACE)
