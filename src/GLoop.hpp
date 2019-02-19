@@ -1,11 +1,17 @@
 #pragma once
 
-#include <memory>
 #include "System.hpp"
+#include "Loader.hpp"
+#include "IdManager.hpp"
 
 namespace gloop {
 
 	using family_type = uint32_t;
+
+	struct system_s {
+		std::size_t id;
+		gloop::ISystem *system;
+	};
 
 	class GLoop {
 		public:
@@ -13,42 +19,45 @@ namespace gloop {
 			~GLoop() = default;
 
 			void	run() {
+				init();
 				while (1) {
 					update();
 				}
 			};
 
+			void	runStart();
+			void	runMiddle();
+			void	runEnd();
+
 			/*
-			** construct a system
+			** construct a system and return it
 			*/
 			template<typename System, typename ...Args>
 			System	&construct(Args&& ...args) {
-
+				return System{std::forward<Args>(args) ...};
 			}
 
 			void	addSystem(gloop::ISystem *systemToAdd) {
-				for (auto &&elem = _systems.begin(); elem != _systems.end(); ++elem)
+				/*for (auto &&elem = _systems.begin(); elem != _systems.end(); ++elem)
 				{
 					if ((*elem)->getPriority() >= systemToAdd->getPriority()) {
 						_systems.emplace(elem, std::move(systemToAdd));
 						return;
 					}
-				}
-				_systems.emplace_back(std::move(systemToAdd));
+				}*/
+				std::size_t id = _idManager.generate();
+				_systems.push_back( {id, std::move(systemToAdd)} );
 			}
 
-			void	removeSystem(gloop::ISystem *System) {
+			void	removeSystem(std::size_t id) {
 				for (auto &&elem = _systems.begin(); elem != _systems.end(); ++elem)
 				{
-					if ((*elem).get() == System) {
+					if (elem->id == id) {
 						_systems.erase(elem);
 						return;
 					}
 				}
-				if (System == (*_systems.end()).get())
-					_systems.pop_back();
-				else
-					std::cerr << "Error: Cannot found system" << std::endl;
+				std::cerr << "Error: Cannot found system" << std::endl;
 
 			};
 
@@ -56,16 +65,15 @@ namespace gloop {
 			void	init() {};
 			void	update() {
 				for (auto &&elem: _systems) {
-					elem->update();
+					elem.system->update();
 				}
 			};
-			void	loadSystem(std::string const &path) {(void)path;};
-			void	unloadSystem(std::string const &path) {(void)path;};
-
 
 		private:
+			tools::IdManager			_idManager;
+			tools::Loader		_loader;
 			std::size_t			_maxSys;
-			std::vector<std::unique_ptr<ISystem>> _systems;
+			std::vector<system_s> _systems;
 
 	};
 };

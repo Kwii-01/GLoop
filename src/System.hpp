@@ -5,6 +5,7 @@
 #include <vector>
 #include <chrono>
 #include <algorithm>
+#include <memory>
 #include "ECM/Register.hpp"
 
 ecm::Register regist;

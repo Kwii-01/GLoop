@@ -17,8 +17,6 @@
 	#include <dlfcn.h>
 #endif
 
-#include "IdManager.hpp"
-
 namespace tools {
 
 	using	load_id = std::size_t;
@@ -31,7 +29,7 @@ namespace tools {
 
 	class Loader {
 		public:
-			Loader() : _idManager() {}
+			Loader() {}
 
 			~Loader() {
 					for(auto&& elem : _hdlrs) {
@@ -46,10 +44,10 @@ namespace tools {
 		public:
 			#ifdef _WIN32
 			template<typename Fcnt>
-			load_s<Fcnt>	load(const std::string &libname, const std::string &name)
+			load_s<Fcnt>	load(const std::string &libname, const std::string &funcName, const std::size_t id)
 			#else
 			template<typename Fcnt>
-			load_s<Fcnt>	load(const std::string &libname, const std::string &name, const int &flag = RTLD_LAZY)
+			load_s<Fcnt>	load(const std::string &libname, const std::string &funcName, const std::size_t id, const int &flag = RTLD_LAZY)
 			#endif
 			{
 				#ifdef _WIN32
@@ -68,12 +66,11 @@ namespace tools {
 
 				#endif
 
-				load_id id = _idManager.generate();
 				_hdlrs[id] = hdlr;
 
 				#ifdef _WIN32
 
-				Fcnt function = (Fcnt)GetProcAddress(hdlr, name.c_str());
+				Fcnt function = (Fcnt)GetProcAddress(hdlr, funcName.c_str());
 				if (!function) {
 					FreeLibrary(hdlr);
 					throw std::exception();
@@ -81,7 +78,7 @@ namespace tools {
 				
 				#else
 				
-				Fcnt function = (Fcnt)dlsym(hdlr, name.c_str());
+				Fcnt function = (Fcnt)dlsym(hdlr, funcName.c_str());
 				if (!function || dlerror()) {
 					dlclose(hdlr);
 					throw std::exception();
@@ -104,7 +101,6 @@ namespace tools {
 			}
 
 		private:
-			IdManager					_idManager;
 			#ifdef _WIN32
 				std::unordered_map<load_id, HINSTANCE>	_hdlrs;
 			#else
