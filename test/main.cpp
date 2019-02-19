@@ -1,7 +1,7 @@
 
-#include "Systems/Collision.hpp"
-#include "Systems/Movement.hpp"
-#include "../src/GLoop.hpp"
+// #include "Systems/Collision.hpp"
+// #include "Systems/Movement.hpp"
+// #include "../src/GLoop.hpp"
 /*
 #include <string>
 #include <iostream>
@@ -56,16 +56,16 @@ void	displaySystem(std::vector<testSystem> v) {
 
 int	main()
 {
-	 gloop::ISystem *movement = new Movement();
-	 gloop::ISystem *collision = new Collision();
+	//  gloop::ISystem *movement = new Movement();
+	//  gloop::ISystem *collision = new Collision();
 
 
-	 gloop::GLoop	gloop;
+	//  gloop::GLoop	gloop;
 
-	 gloop.addSystem(movement);
-	 gloop.addSystem(collision);
+	//  gloop.addSystem(movement);
+	//  gloop.addSystem(collision);
 
-	 gloop.run();
+	//  gloop.run();
 
 /*	std::srand(std::time(nullptr)); // use current time as seed for random generator
 

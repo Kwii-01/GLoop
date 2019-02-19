@@ -1,12 +1,5 @@
 
 set(CORE_SRCS
-	GLoop.hpp
-	System.hpp
-	ThreadPool.hpp
-	Loader.hpp
-	IdManager.hpp
-)
-
-add_subdirectory(ECM)
+	GLoop.hpp)
 
 add_library(CORE_SRCS INTERFACE)

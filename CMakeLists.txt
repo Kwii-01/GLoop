@@ -11,3 +11,8 @@ project(Game VERSION 1.0)
 
 add_subdirectory(src)
 add_subdirectory(test)
+
+target_link_libraries(${PROJECT_NAME} CORE_SRCS ${CMAKE_DL_LIBS})
+
+set_target_properties(${PROJECT_NAME} PROPERTIES
+	RUNTIME_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY})

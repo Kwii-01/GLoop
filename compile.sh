@@ -1,3 +1,12 @@
 #!/bin/sh
-mkdir build && cd build && cmake .. && make && cd ..
+mkdir build 
+
+cd build
+
+cmake ..
+
+make
+
+cd ..
+
 rm -rf build/
