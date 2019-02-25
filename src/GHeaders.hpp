@@ -3,6 +3,8 @@
 #include <string>
 #include <functional>
 #include <chrono>
+#include "Register.hpp"
+#include "GLoop.hpp"
 
 namespace gloop {
 
@@ -10,11 +12,9 @@ namespace gloop {
 	using gtimer = std::chrono::time_point<std::chrono::system_clock>;
 
 	enum HookType {
-		VERY_EARLY,
 		EARLY,
 		MIDDLE,
 		LAST,
-		VERY_LAST,
 	};
 
 	enum StageType {
@@ -26,7 +26,7 @@ namespace gloop {
 	enum HookStatus {
 		OK,
 		ERROR,
-		GAME_ERROR,
+		STOP_LOOP,
 	};
 
 	struct SystemHook {
@@ -34,7 +34,7 @@ namespace gloop {
 		gloop::guint				weight_p;
 		int						callrate;
 		bool						threadable;
-		std::function<gloop::HookStatus(/* ecm::Register &, GLoop &*/)>	callback;
+		std::function<gloop::HookStatus(ecm::Register &, gloop::GLoop &)>	callback;
 
 		bool	operator==(const SystemHook &other) const {
 			return sys_name == other.sys_name;

@@ -13,24 +13,34 @@ namespace gloop {
 			Stage() = default;
 			~Stage() = default;
 
-			void	add_hook(const gloop::HookType, gloop::SystemHook &);
+			void	add_hook(const gloop::HookType type, gloop::SystemHook &hook) { _hooks[type].insert(std::make_pair(hook.weight_p, gloop::HookCallRate{hook, std::chrono::system_clock::now()})); }
 
-			void	remove_system_hooks(const std::string &);
-			void	remove_system_hook_from(const gloop::HookType, const std::string &);
+			void	remove_system_hooks(const std::string &sys) {
+				for(auto&& hooks : _hooks)
+					remove_system_hook_from(hooks.first, sys);
+			}
 
-			void	clear_hooks();
-			void	clear_hooks(const gloop::HookType);
+			void	remove_system_hook_from(const gloop::HookType type, const std::string &sys) {
+				auto elem = std::find(_hooks[type].begin(), _hooks[type].end(), [sys](const gloop::HookCallRate &h){ return h.hook.sys_name == sys; });
+				if (elem != _hooks[type].end())
+					_hooks[type].erase(elem);
+			}
 
-			hookMap	&get_hookMap(const gloop::HookType);
+			void	clear_hooks() noexcept {
+				for(auto&& hooks : _hooks)
+					clear_hooks(hooks.first);
+			}
+
+			void	clear_hooks(const gloop::HookType type) noexcept { _hooks[type].clear(); }
+
+			hookMap	&get_hookMap(const gloop::HookType type) noexcept { return _hooks[type]; }
 
 		private:
 			/* data */
 			std::unordered_map<gloop::HookType, hookMap>	_hooks = {
-				{gloop::HookType::VERY_EARLY, {}},
 				{gloop::HookType::EARLY, {}},
 				{gloop::HookType::MIDDLE, {}},
 				{gloop::HookType::LAST, {}},
-				{gloop::HookType::VERY_LAST, {}}
 			};
 	}; // Stage
 
