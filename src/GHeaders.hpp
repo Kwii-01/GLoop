@@ -29,6 +29,8 @@ namespace gloop {
 		STOP_LOOP,
 	};
 
+	class GLoop;
+
 	struct SystemHook {
 		std::string					sys_name;
 		gloop::guint				weight_p;

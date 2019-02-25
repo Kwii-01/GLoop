@@ -53,7 +53,7 @@ namespace ecm {
 			*/
 			template<typename Component>
 			inline size_type	size() {
-				family_type	ctype = assure<Component>();
+				std::type_index	ctype = assure<Component>();
 				return _cpool[ctype]->size();
 			}
 
@@ -64,7 +64,7 @@ namespace ecm {
 			*/
 			template<typename Component>
 			inline bool	has(entity_type id) {
-				family_type	ctype = assure<Component>();
+				std::type_index	ctype = assure<Component>();
 				return _cpool[ctype]->has(id);
 			}
 
@@ -91,7 +91,7 @@ namespace ecm {
 			*/
 			template<typename Component>
 			void	assign(const entity_type ent, const Component &comp) {
-				family_type	ctype = assure<Component>();
+				std::type_index	ctype = assure<Component>();
 
 				static_cast<SparseSet<Component> *>(_cpool[ctype].get())->push(ent, comp);
 			}
@@ -105,7 +105,7 @@ namespace ecm {
 			*/
 			template<typename Component, typename ...Args>
 			Component	&construct(const entity_type ent, Args&& ...args) {
-				family_type	ctype = assure<Component>();
+				std::type_index	ctype = assure<Component>();
 
 				return static_cast<SparseSet<Component> *>(_cpool[ctype].get())->emplace(ent, args...);
 			}
@@ -178,12 +178,10 @@ namespace ecm {
 			*/
 			template<typename Component>
 			inline void	initPool(const size_type size) {
-				family_type	ctype = Family::type<Component>();
+				std::type_index	ctype = std::type_index(typeid(Component));
 
-				if (_cpool.size() <= ctype) {
-					_cpool.resize(ctype + 1);
+				if (_cpool.size() <= static_cast<long unsigned int>(ctype))
 					_cpool[ctype] = std::move(std::unique_ptr<BaseSparseSet>(new SparseSet<Component>{size}));
-				}
 			}
 
 			/**
@@ -241,10 +239,8 @@ namespace ecm {
 			std::type_index	assure() {
 				std::type_index	ctype = std::type_index(typeid(Component));
 
-				if (_cpool.size() <= ctype) {
-					_cpool.resize(ctype + 1);
+				if (_cpool.size() <= static_cast<long unsigned int>(ctype))
 					_cpool[ctype] = std::move(std::unique_ptr<BaseSparseSet>(new SparseSet<Component>{_maxEntity}));
-				}
 				return ctype;
 			}
 
@@ -272,20 +268,20 @@ namespace ecm {
 			*/
 			template<typename Component>
 			void	delete_component(const entity_type id) {
-				family_type	ctype = assure<Component>();
+				std::type_index	ctype = assure<Component>();
 
 				static_cast<SparseSet<Component> *>(_cpool[ctype].get())->destroy(id);
 			}
 
 			template<typename Component, typename ...Components>
 			inline void	safe_initialise_tuple(std::tuple<Components *...> &tuple, const entity_type id) {
-				family_type	ctype = assure<Component>();
+				std::type_index	ctype = assure<Component>();
 				std::get<Component *>(tuple) = static_cast<SparseSet<Component> *>(_cpool[ctype].get())->try_get(id);
 			}
 
 			template<typename Component, typename ...Components>
 			inline void	initialise_tuple(std::tuple<Components ...> &tuple, const entity_type id) {
-				family_type	ctype = assure<Component>();
+				std::type_index	ctype = assure<Component>();
 				std::get<Component>(tuple) = static_cast<SparseSet<Component> *>(_cpool[ctype].get())->get(id);
 			}
 

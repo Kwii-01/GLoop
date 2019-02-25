@@ -21,7 +21,7 @@ namespace gloop {
 			}
 
 			void	remove_system_hook_from(const gloop::HookType type, const std::string &sys) {
-				auto elem = std::find(_hooks[type].begin(), _hooks[type].end(), [sys](const gloop::HookCallRate &h){ return h.hook.sys_name == sys; });
+				auto elem = std::find_if(_hooks[type].begin(), _hooks[type].end(), [sys](const std::pair<gloop::guint, gloop::HookCallRate> &h){ return h.second.hook.sys_name == sys; });
 				if (elem != _hooks[type].end())
 					_hooks[type].erase(elem);
 			}
