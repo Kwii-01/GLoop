@@ -180,7 +180,7 @@ namespace ecm {
 			inline void	initPool(const size_type size) {
 				std::type_index	ctype = std::type_index(typeid(Component));
 
-				if (_cpool.size() <= static_cast<long unsigned int>(ctype))
+				if (_cpool.find(ctype) == _cpool.end())
 					_cpool[ctype] = std::move(std::unique_ptr<BaseSparseSet>(new SparseSet<Component>{size}));
 			}
 
@@ -239,7 +239,7 @@ namespace ecm {
 			std::type_index	assure() {
 				std::type_index	ctype = std::type_index(typeid(Component));
 
-				if (_cpool.size() <= static_cast<long unsigned int>(ctype))
+				if (_cpool.find(ctype) == _cpool.end())
 					_cpool[ctype] = std::move(std::unique_ptr<BaseSparseSet>(new SparseSet<Component>{_maxEntity}));
 				return ctype;
 			}
