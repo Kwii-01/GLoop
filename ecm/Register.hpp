@@ -17,7 +17,7 @@ namespace ecm {
 	template<typename ...Components>
 	struct	view_s {
 		entity_type				id;
-		std::tuple<Components...>	comps;
+		std::tuple<Components *...>	comps;
 	};
 
 	class Register {
@@ -172,6 +172,17 @@ namespace ecm {
 			}
 
 			/**
+			 * getNativePool<T>
+			 * @deprecated Use this function to get the component pool choosen
+			 * @returns this function will return the component pool
+			*/
+			template<typename Component>
+			inline BaseSparseSet	*getNativePool() {
+				auto	ctype = assure<Component>();
+				return _cpool[ctype].get();
+			}
+
+			/**
 			 * initPool<T>
 			 * @deprecated Use this function to init the component pool by choosing its size
 			 * @param size size of the component pool
@@ -222,7 +233,7 @@ namespace ecm {
 				for(auto&& id : _entities) {
 					if (!cpool_has<Components...>(id))
 						continue;
-					views.emplace(id, id, view<Components...>(id));
+					views.emplace(id, id, safe_view<Components...>(id));
 				}
 				views.shrink_to_fit();
 				return views;
@@ -275,14 +286,12 @@ namespace ecm {
 
 			template<typename Component, typename ...Components>
 			inline void	safe_initialise_tuple(std::tuple<Components *...> &tuple, const entity_type id) {
-				std::type_index	ctype = assure<Component>();
-				std::get<Component *>(tuple) = static_cast<SparseSet<Component> *>(_cpool[ctype].get())->try_get(id);
+				std::get<Component *>(tuple) = try_get<Component>(id);
 			}
 
 			template<typename Component, typename ...Components>
 			inline void	initialise_tuple(std::tuple<Components ...> &tuple, const entity_type id) {
-				std::type_index	ctype = assure<Component>();
-				std::get<Component>(tuple) = static_cast<SparseSet<Component> *>(_cpool[ctype].get())->get(id);
+				std::get<Component>(tuple) = get<Component>(id);
 			}
 
 		private:
