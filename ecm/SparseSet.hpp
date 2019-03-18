@@ -5,7 +5,7 @@
 #include <stdexcept>
 #include <algorithm>
 
-namespace ecm {
+namespace GEcm {
 
 	using size_type = uint32_t;
 	using entity_type = size_type;

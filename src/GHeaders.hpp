@@ -68,7 +68,7 @@ namespace gloop {
 		gloop::guint				weight_p;
 		int						callrate;
 		bool						threadable;
-		std::function<gloop::HookStatus(ecm::Register &, gloop::GLoop &)>	callback;
+		std::function<gloop::HookStatus(GEcm::Register &, gloop::GLoop &)>	callback;
 
 		bool	operator==(const SystemHook &other) const {
 			return sys_name == other.sys_name;

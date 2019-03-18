@@ -6,7 +6,7 @@
 #include "StageManager.hpp"
 
 #define LOADED_FUNCTION	("HooksRegister")
-using fcnt = void	(*)(ecm::Register &, gloop::StageManager &);
+using fcnt = void	(*)(GEcm::Register &, gloop::StageManager &);
 
 namespace gloop {
 
@@ -20,14 +20,14 @@ namespace gloop {
 			 * @deprecated this function launch the gloop
 			 * @param1 the register to use for the whole game
 			*/
-			void	run(ecm::Register &reg);
+			void	run(GEcm::Register &reg);
 
 			/**
 			 * load_system
 			 * @deprecated load one system
 			 * @param1 library path
 			*/
-			void	load_system(const std::string &libpath, ecm::Register &reg) {
+			void	load_system(const std::string &libpath, GEcm::Register &reg) {
 				tools::load_s<fcnt>	loaded = _loader.load<fcnt>(libpath, LOADED_FUNCTION);
 				loaded.function(reg, _stageM);
 			}
@@ -49,11 +49,11 @@ namespace gloop {
 			gloop::StageManager	&get_stage_manager() noexcept { return _stageM; }
 
 		private:
-			gloop::HookStatus		run_hooks(gloop::Stage &, ecm::Register &);
-			gloop::HookStatus		run_loop_hooks(gloop::Stage &, ecm::Register &);
+			gloop::HookStatus		run_hooks(gloop::Stage &, GEcm::Register &);
+			gloop::HookStatus		run_loop_hooks(gloop::Stage &, GEcm::Register &);
 
-			gloop::HookStatus		run_one_hook(gloop::Stage::hookMap &, ecm::Register &);
-			gloop::HookStatus		run_one_loop_hook(gloop::Stage::hookMap &, ecm::Register &);
+			gloop::HookStatus		run_one_hook(gloop::Stage::hookMap &, GEcm::Register &);
+			gloop::HookStatus		run_one_loop_hook(gloop::Stage::hookMap &, GEcm::Register &);
 			/* data */
 			gloop::StageManager		_stageM;
 			tools::Loader			_loader;

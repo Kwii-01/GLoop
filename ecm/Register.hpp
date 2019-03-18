@@ -12,7 +12,7 @@
 // - work back on the global_view to optimize it
 // - make idgenerator faster
 
-namespace ecm {
+namespace GEcm {
 
 	template<typename ...Components>
 	struct	view_s {
@@ -53,8 +53,7 @@ namespace ecm {
 			*/
 			template<typename Component>
 			inline size_type	size() {
-				std::type_index	ctype = assure<Component>();
-				return _cpool[ctype]->size();
+				return _cpool[assure<Component>()]->size();
 			}
 
 			/**
@@ -64,8 +63,7 @@ namespace ecm {
 			*/
 			template<typename Component>
 			inline bool	has(entity_type id) {
-				std::type_index	ctype = assure<Component>();
-				return _cpool[ctype]->has(id);
+				return _cpool[assure<Component>()]->has(id);
 			}
 
 			/**
@@ -91,9 +89,7 @@ namespace ecm {
 			*/
 			template<typename Component>
 			void	assign(const entity_type ent, const Component &comp) {
-				std::type_index	ctype = assure<Component>();
-
-				static_cast<SparseSet<Component> *>(_cpool[ctype].get())->push(ent, comp);
+				static_cast<SparseSet<Component> *>(_cpool[assure<Component>()].get())->push(ent, comp);
 			}
 
 			/**
@@ -105,9 +101,7 @@ namespace ecm {
 			*/
 			template<typename Component, typename ...Args>
 			Component	&construct(const entity_type ent, Args&& ...args) {
-				std::type_index	ctype = assure<Component>();
-
-				return static_cast<SparseSet<Component> *>(_cpool[ctype].get())->emplace(ent, args...);
+				return static_cast<SparseSet<Component> *>(_cpool[assure<Component>()].get())->emplace(ent, args...);
 			}
 
 			/**
@@ -131,7 +125,7 @@ namespace ecm {
 				if (realId < _entities.size()) {
 					_entities[realId] = 0;
 					for(auto&& comps : _cpool)
-						comps.second->destroy(realId);
+						comps.second->destroy(id);
 				}
 			}
 
@@ -144,8 +138,7 @@ namespace ecm {
 			*/
 			template<typename Component>
 			inline Component	&get(const entity_type id) {
-				auto	ctype = assure<Component>();
-				return static_cast<SparseSet<Component> *>(_cpool[ctype].get())->get(id);
+				return static_cast<SparseSet<Component> *>(_cpool[assure<Component>()].get())->get(id);
 			}
 
 			/**
@@ -156,8 +149,7 @@ namespace ecm {
 			*/
 			template<typename Component>
 			inline Component	*try_get(const entity_type id) {
-				auto	ctype = assure<Component>();
-				return static_cast<SparseSet<Component> *>(_cpool[ctype].get())->try_get(id);
+				return static_cast<SparseSet<Component> *>(_cpool[assure<Component>()].get())->try_get(id);
 			}
 
 			/**
@@ -167,8 +159,7 @@ namespace ecm {
 			*/
 			template<typename Component>
 			inline SparseSet<Component>	*getPool() {
-				auto	ctype = assure<Component>();
-				return static_cast<SparseSet<Component> *>(_cpool[ctype].get());
+				return static_cast<SparseSet<Component> *>(_cpool[assure<Component>()].get());
 			}
 
 			/**
@@ -178,8 +169,7 @@ namespace ecm {
 			*/
 			template<typename Component>
 			inline BaseSparseSet	*getNativePool() {
-				auto	ctype = assure<Component>();
-				return _cpool[ctype].get();
+				return _cpool[assure<Component>()].get();
 			}
 
 			/**
@@ -279,9 +269,7 @@ namespace ecm {
 			*/
 			template<typename Component>
 			void	delete_component(const entity_type id) {
-				std::type_index	ctype = assure<Component>();
-
-				static_cast<SparseSet<Component> *>(_cpool[ctype].get())->destroy(id);
+				static_cast<SparseSet<Component> *>(_cpool[assure<Component>()].get())->destroy(id);
 			}
 
 			template<typename Component, typename ...Components>
