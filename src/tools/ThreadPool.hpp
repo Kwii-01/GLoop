@@ -11,7 +11,7 @@
 
 class ThreadPool {
 	public:
-		ThreadPool(unsigned int	max_worker = 0) : _state(true) {
+		ThreadPool(unsigned int	max_worker = 1) : _state(true) {
 			if (max_worker < 1)
 				max_worker = std::thread::hardware_concurrency();
 			for (unsigned int id = 0; id < max_worker; id++)
