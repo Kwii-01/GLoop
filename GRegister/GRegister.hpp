@@ -11,7 +11,7 @@
 #include "SparseSet.hpp"
 
 namespace g_reg {
-	
+
 	using bsparse_set = sparset_collection::BaseSparseSet;
 	template<typename T>
 	using sparse_set = sparset_collection::SparseSet<T>;
@@ -22,7 +22,7 @@ namespace g_reg {
 		std::size_t			id;
 		std::tuple<T *...>	components;
 	};
-	
+
 
 	class GRegister {
 		public:
@@ -135,7 +135,7 @@ namespace g_reg {
 
 			std::size_t				_max;
 			g_reg::IdManager		_gid;
-			std::set<std::size_t>	_reg;
+			std::unordered_set<std::size_t>	_reg;
 			components_pool			_pool;
 	}; // GRegister
 

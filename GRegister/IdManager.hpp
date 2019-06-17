@@ -1,9 +1,9 @@
 #pragma once
 
-#include <set>
+#include <unordered_set>
 
 namespace g_reg {
-      
+
       class IdManager {
             public:
                   IdManager(const std::size_t max) : _max(max) {
@@ -29,7 +29,7 @@ namespace g_reg {
 
             private:
                   std::size_t             _max;
-                  std::set<std::size_t>   _unused;
+                  std::unordered_set<std::size_t>   _unused;
       }; // IdManager
 
 } // namespace g_reg
