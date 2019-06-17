@@ -8,7 +8,7 @@ namespace gloop {
 
 	class Stage {
 		public:
-			using hookMap = std::multimap<gloop::guint, gloop::HookCallRate>;
+			using HookMap = std::multimap<std::size_t, gloop::HookCallRate>;
 
 			Stage() = default;
 			~Stage() = default;
@@ -19,7 +19,7 @@ namespace gloop {
 			 * @param1 type of the hook
 			 * @param2 SystemHook to add
 			*/
-			void	add_hook(const gloop::HookType type, gloop::SystemHook &hook) { _hooks[type].insert(std::make_pair(hook.weight_p, gloop::HookCallRate{hook, std::chrono::system_clock::now()})); }
+			void	add_hook(gloop::SystemHook &hook) { _hooks.insert(std::make_pair(hook.weight_p, gloop::HookCallRate{hook, std::chrono::system_clock::now()})); }
 
 			/**
 			 * remove_system_hooks
@@ -27,20 +27,9 @@ namespace gloop {
 			 * @param1 system name
 			*/
 			void	remove_system_hooks(const std::string &sys) {
-				for(auto&& hooks : _hooks)
-					remove_system_hook_from(hooks.first, sys);
-			}
-
-			/**
-			 * remove_system_hook_from
-			 * @deprecated this function remove a hook of a system
-			 * @param1 hooktype to remove
-			 * @param2 system name
-			*/
-			void	remove_system_hook_from(const gloop::HookType type, const std::string &sys) {
-				auto elem = std::find_if(_hooks[type].begin(), _hooks[type].end(), [sys](const std::pair<gloop::guint, gloop::HookCallRate> &h){ return h.second.hook.sys_name == sys; });
-				if (elem != _hooks[type].end())
-					_hooks[type].erase(elem);
+				auto elem = std::find_if(_hooks.begin(), _hooks.end(), [sys](const std::pair<std::size_t, gloop::HookCallRate> &h){ return h.second.hook.sys_name == sys; });
+				if (elem != _hooks.end())
+					_hooks.erase(elem);
 			}
 
 			/**
@@ -48,16 +37,8 @@ namespace gloop {
 			 * @deprecated clear all the hooks of the stage
 			*/
 			void	clear_hooks() noexcept {
-				for(auto&& hooks : _hooks)
-					clear_hooks(hooks.first);
+				_hooks.clear();
 			}
-
-			/**
-			 * clear_hooks
-			 * @deprecated clear the hook chosen of the stage
-			 * @param1 hooktype to clear
-			*/
-			void	clear_hooks(const gloop::HookType type) noexcept { _hooks[type].clear(); }
 
 			/**
 			 * get_hookMap
@@ -65,15 +46,11 @@ namespace gloop {
 			 * @param1 type of the hook to return
 			 * @return hookmap chosen
 			*/
-			hookMap	&get_hookMap(const gloop::HookType type) noexcept { return _hooks[type]; }
+			HookMap	&get_hookMap() noexcept { return _hooks; }
 
 		private:
 			/* data */
-			std::unordered_map<gloop::HookType, hookMap>	_hooks = {
-				{gloop::HookType::EARLY, {}},
-				{gloop::HookType::MIDDLE, {}},
-				{gloop::HookType::LAST, {}},
-			};
+			HookMap	_hooks;
 	}; // Stage
 
 	class StageManager {
@@ -88,7 +65,7 @@ namespace gloop {
 			 * @return stage chosen
 			*/
 			Stage	&get_stage(const gloop::StageType type) noexcept { return _stages[type]; }
-
+[type]
 		private:
 			/* data */
 			std::unordered_map<gloop::StageType, Stage>	_stages = {

@@ -3,26 +3,12 @@
 #include <string>
 #include <functional>
 #include <chrono>
-#include "Register.hpp"
+#include "GRegister.hpp"
 #include "GLoop.hpp"
 
 namespace gloop {
 
-	using guint = std::size_t;
 	using gtimer = std::chrono::time_point<std::chrono::system_clock>;
-
-	/**
-	 * HookType
-	 * hooks are functions to call at one moment during stage
-	 * EARLY: functions are calls in first
-	 * MIDDLE: functions are calls after early
-	 * LAST: functions are calls in last
-	*/
-	enum HookType {
-		EARLY,
-		MIDDLE,
-		LAST,
-	};
 
 
 	/**
@@ -45,6 +31,7 @@ namespace gloop {
 	 * ERROR: there is an error, the gloop will stop
 	 * STOP_LOOP: stop the loop stage and go into the final stage
 	*/
+
 	enum HookStatus {
 		OK,
 		ERROR,
@@ -56,7 +43,7 @@ namespace gloop {
 	/**
 	 * SystemHook
 	 * is a structure that allow the user to create easly a hook
-	 * 
+	 *
 	 * sys_name: name of the system
 	 * weight_p: determine the priority of a hook, bigger is the number, bigger priority it will have
 	 * callrate: determine the callrate of a function in the LOOP stage in ms.
@@ -65,14 +52,9 @@ namespace gloop {
 	*/
 	struct SystemHook {
 		std::string					sys_name;
-		gloop::guint				weight_p;
-		int						callrate;
-		bool						threadable;
-		std::function<gloop::HookStatus(GEcm::Register &, gloop::GLoop &)>	callback;
-
-		bool	operator==(const SystemHook &other) const {
-			return sys_name == other.sys_name;
-		}
+		std::size_t					weight_p;
+		int							callrate;
+		std::function<gloop::HookStatus(g_reg::Register &, gloop::GLoop &)>	callback;
 	};
 
 	/**
@@ -84,6 +66,6 @@ namespace gloop {
 		gloop::SystemHook	hook;
 		gloop::gtimer	last_call;
 	};
-	
+
 
 } // gloop
