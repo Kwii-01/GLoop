@@ -15,37 +15,17 @@ namespace gloop {
 			GLoop() = default;
 			~GLoop() = default;
 
-			/**
-			 * run
-			 * @deprecated this function launch the gloop
-			 * @param1 the register to use for the whole game
-			*/
 			void	run(g_reg::GRegister &reg);
 
-			/**
-			 * load_system
-			 * @deprecated load one system
-			 * @param1 library path
-			*/
-			void	load_system(const std::string &libpath, g_reg::GRegister &reg) {
-				tools::load_s<fcnt>	loaded = _loader.load<fcnt>(libpath, LOADED_FUNCTION);
+			void	load_system(g_reg::GRegister &reg, const std::string &libPath, const std::string &functionName = LOADED_FUNCTION) {
+				tools::load_s<fcnt>	loaded = _loader.load<fcnt>(libpath, functionName);
 				loaded.function(reg, _stageM);
 			}
 
-			/**
-			 * unload_system
-			 * @deprecated this function unload a lib
-			 * @param1 libpath to unload
-			*/
-			void	unload_system(const std::string &libpath) {
+			void	unload_system(const std::string &libPath) {
 				_loader.unload(libpath);
 			}
 
-			/**
-			 * get_stage_manager
-			 * @deprecated this function return the stagemanager of the gloop
-			 * @return the stage manager
-			*/
 			gloop::StageManager	&get_stage_manager() noexcept { return _stageM; }
 
 		private:
